@@ -1,0 +1,4 @@
+*.blend?
+_archive
+blendcache_*
+cache_*
