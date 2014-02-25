@@ -43,14 +43,13 @@ git checkout grandprix2014
 
 If you are starting a new short project, consider creating a new branch to
 store your content. In general, the `master` branch should not be touched. For
-example, branches might be related like so:
+example:
 
 ```
 ── master
    ├── showcase2011
    ├── grandprix2013
    └── grandprix2014
-       └── manufacturing2014
 ```
 
 ```bash
