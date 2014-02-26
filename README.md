@@ -19,7 +19,7 @@ Some files need to generate content before the animation can play:
   emitter mesh, and bake it.
 
 
-## Acceptable Content
+## Committing to This Repository
 
 The golden rule here is to keep everything small. In general, that means you
 should store exactly what is needed to generate the final product.
