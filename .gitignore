@@ -2,3 +2,5 @@
 _archive
 blendcache_*
 cache_*
+*~
+render

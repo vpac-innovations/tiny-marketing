@@ -19,6 +19,24 @@ Some files need to generate content before the animation can play:
   emitter mesh, and bake it.
 
 
+## Rendering
+
+Open up one of the `diff-*.blend` files in Blender and render it. It's rendered
+using Cycles, so you can get a bit of a speed-up if you use the GPU.
+
+To render from the command line, do something like this:
+
+```bash
+blender -b -t 8 diff_design.blend -s 220 -e 250 -a
+```
+
+That will render frames 220-250 (inclusive) and write each frame to
+`render/design%04d.png`, using 8 threads. Note that the order of arguments is
+important. The files should already be configured to render at full HD
+resolution. If not, or if you need another resolution, you'll have to open the
+file and save it again with different settings.
+
+
 ## Committing to This Repository
 
 The golden rule here is to keep everything small. In general, that means you
