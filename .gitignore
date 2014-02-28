@@ -4,3 +4,6 @@ blendcache_*
 cache_*
 *~
 render
+*.webm
+*.avi
+*.mp4

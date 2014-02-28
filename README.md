@@ -37,6 +37,35 @@ resolution. If not, or if you need another resolution, you'll have to open the
 file and save it again with different settings.
 
 
+## Transcoding into Video
+
+Once the `.png` files have been rendered, you'll want to combine them into a
+video for playback. Because the background has a subtle gradient, the frames
+[must be combined with a noise texture][grad-band] to prevent banding.
+
+[grad-band]: http://www.vueplus.com/blog/2012/09/how-to-avoid-gradient-banding/
+
+```bash
+avconv -i render/mould%04d.png \
+    -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
+    -b:v 30000k -qmin 2 -qmax 30 \
+    mould-noise3.webm
+```
+
+The noise texture is not included in this repository, due to its large size. You
+can create one easily in The GIMP: use the *HSV Noise* filter on a middle grey
+images with values like these:
+
+- Holdness: 3
+- Hue: 180
+- Saturation: 79
+- Value: 109
+
+Then split it into two layers - one for lightening, and one for darkening, using
+masks. The white mask should have opacity of 3.5%; the black should be 7%.
+Export the two layers together to `textures/noise3.png`.
+
+
 ## Committing to This Repository
 
 The golden rule here is to keep everything small. In general, that means you
