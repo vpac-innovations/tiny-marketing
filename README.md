@@ -45,12 +45,42 @@ video for playback. Because the background has a subtle gradient, the frames
 
 [grad-band]: http://www.vueplus.com/blog/2012/09/how-to-avoid-gradient-banding/
 
+
+### Individual Videos
+
+Each section can be rendered separately:
+
 ```bash
-avconv -i render/mould%04d.png \
+for anim in aero design mould paint stress system xsection; do
+    avconv -i render/$anim%04d.png \
+        -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
+        -b:v 30000k -qmin 2 -qmax 30 \
+        -c:v libx264 video/$anim-h264.mp4
+done
+```
+
+
+### Full Video
+
+Combining all frames without loss of quality is tricky to do with arguments to
+`avconv`. The easiest way to do it is to make symlinks to the individual frames
+first in the order that you want.
+
+```bash
+i=0
+for f in render/*; do
+    ln -s `pwd`/$f /tmp/combined/img-$i.png
+    i=$(( i + 1 ))
+done
+
+avconv -i /tmp/combined/img-%d.png \
     -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
     -b:v 30000k -qmin 2 -qmax 30 \
-    mould-noise3.webm
+    -c:v libx264 video/all-x264.mp4
 ```
+
+
+### Noise Texture
 
 The noise texture is not included in this repository, due to its large size. You
 can create one easily in The GIMP: use the *HSV Noise* filter on a middle grey
@@ -64,6 +94,12 @@ images with values like these:
 Then split it into two layers - one for lightening, and one for darkening, using
 masks. The white mask should have opacity of 3.5%; the black should be 7%.
 Export the two layers together to `textures/noise3.png`.
+
+
+### Scaling Down
+
+To scale it down to half HD, add `-s 960x540`, set `-b:v 5000k` and use a noise
+texture with the same resolution.
 
 
 ## Committing to This Repository
