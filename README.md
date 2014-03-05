@@ -43,6 +43,12 @@ Once the `.png` files have been rendered, you'll want to combine them into a
 video for playback. Because the background has a subtle gradient, the frames
 [must be combined with a noise texture][grad-band] to prevent banding.
 
+For playback on TVs, it's best to use a bitrate of around 30Mbps, with h264
+for video and AAC for audio. Don't leave the audio track off completely, or the
+TV may complain; therefore if you don't have any music, use `/dev/zero` as the
+input. For the Web, use VP8 (which is unfortunately not supported by mant TVs at
+the moment).
+
 [grad-band]: http://www.vueplus.com/blog/2012/09/how-to-avoid-gradient-banding/
 
 
@@ -52,10 +58,14 @@ Each section can be rendered separately:
 
 ```bash
 for anim in aero design mould paint stress system xsection; do
-    avconv -i render/$anim%04d.png \
+    avconv \
+        -ar 48000 -ac 2 -f s16le -i /dev/zero \
+        -i render/$anim%04d.png \
+        -shortest \
         -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
-        -b:v 30000k -qmin 2 -qmax 30 \
-        -c:v libx264 video/$anim-h264.mp4
+        -b:v 30000k -qmin 2 -qmax 30 -c:v libx264 \
+        -c:a aac -strict experimental \
+        video/$anim-h264.mp4
 done
 ```
 
@@ -73,10 +83,14 @@ for f in render/*; do
     i=$(( i + 1 ))
 done
 
-avconv -i /tmp/combined/img-%d.png \
+avconv \
+    -ar 48000 -ac 2 -f s16le -i /dev/zero \
+    -i /tmp/combined/img-%d.png \
+    -shortest \
     -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
-    -b:v 30000k -qmin 2 -qmax 30 \
-    -c:v libx264 video/all-x264.mp4
+    -b:v 30000k -qmin 2 -qmax 30 -c:v libx264 \
+    -c:a aac -strict experimental \
+    video/all-x264.mp4
 ```
 
 
@@ -128,3 +142,4 @@ are interested in.
 ## Copyright
 
 All content was created in-house, and is therefore copyright VPAC Innovations.
+
