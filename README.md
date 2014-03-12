@@ -82,10 +82,31 @@ for f in render/*; do
     ln -s `pwd`/$f /tmp/combined/img-$i.png
     i=$(( i + 1 ))
 done
+```
 
+Once the combined images exist, you can render the titles over them. This
+command expects there to be 1991 images in `/tmp/combined`. The output
+will be written to `render/final*.png`.
+
+```bash
+blender -b -t 8 titles.blend -a
+```
+
+If you are encoding this for a TV, it may not loop seamlessly - so encode
+a few loops into the video. You can use the `createlinks.sh` script to do
+this; currently, it creates 5 loops.
+
+```bash
+mkdir /tmp/final
+./createlinks.sh
+```
+
+Now the final video can be encoded.
+
+```bash
 avconv \
     -ar 48000 -ac 2 -f s16le -i /dev/zero \
-    -i /tmp/combined/img-%d.png \
+    -i /tmp/final/%04d.png \
     -shortest \
     -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
     -b:v 30000k -qmin 2 -qmax 30 -c:v libx264 \
@@ -93,6 +114,8 @@ avconv \
     video/all-x264.mp4
 ```
 
+If you didn't want loops, the createlinks command can be omitted. In that case,
+use `render/final%04d.png` instead of `/tmp/final/%04d.png`.
 
 ### Noise Texture
 
