@@ -4,12 +4,7 @@
 # looped some number of times.
 #
 
-i=1
-for j in {1..5}; do
-	for f in render/combined*.png; do
-		ln -s $PWD/$f /tmp/final/`printf "%04g" $i`.png
-		i=$(( i + 1 ))
-	done
-	echo $i
+for f in render/combined*.png; do
+    ln -s $PWD/$f /tmp/final/`printf "%04g" $i`.png
+    i=$(( i + 1 ))
 done
-
