@@ -148,4 +148,3 @@ are interested in.
 ## Copyright
 
 All content was created in-house, and is therefore copyright VPAC Innovations.
-
