@@ -1,9 +1,24 @@
-# Animated Logo
+# VPAC Innovations Logo
 
-This is an animated logo for VPAC Innovations.
+This is the logo for VPAC Innovations. This project contains files to generate:
 
-To render it, open `LogoSnake.blend` in Blender and press Animate. The
-animation will be written to `render/logosnake.avi`.
+- Static images for use in print and on the Web.
+- An animated version of the logo, for use as a title screen in videos.
+
+
+## Static Logo
+
+Open `logo_fullcolour.svg` in Inkscape. You can generate `.png` files for
+documents by selecting everything on the *guillotine* layer, hiding that layer,
+and then exporting all selected objects (using the batch export feature). This
+will result in some `.png` files in this directory.
+
+
+## Animated Logo
+
+First, generate the `.png` files as described in the Static section above. Then
+open `LogoSnake.blend` in Blender and press Animate. The animation will be
+written to `render/logosnake.avi`.
 
 
 ## Acceptable Content
