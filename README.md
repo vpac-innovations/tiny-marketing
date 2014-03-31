@@ -57,6 +57,8 @@ the moment).
 Each section can be rendered separately:
 
 ```bash
+anim=design
+blender -b -t 8 diff_$anim.blend -s 1 -e 249 -a
 for anim in aero design mould paint stress system xsection; do
     avconv \
         -ar 48000 -ac 2 -f s16le -i /dev/zero \
@@ -70,43 +72,26 @@ done
 ```
 
 
-### Full Video
+### Full Video with Titles
 
-Combining all frames without loss of quality is tricky to do with arguments to
-`avconv`. The easiest way to do it is to make symlinks to the individual frames
-first in the order that you want.
+Render each individual section, and then render `titles.blend` - which pulls
+them all together and adds text overlays.
 
 ```bash
-i=0
-for f in render/*; do
-    ln -s `pwd`/$f /tmp/combined/img-$i.png
-    i=$(( i + 1 ))
+for f in diff_*.blend; do
+    blender -b -t 8 $f -s 1 -e 249 -a
 done
 ```
 
-Once the combined images exist, you can render the titles over them. This
-command expects there to be 1991 images in `/tmp/combined`. The output
-will be written to `render/final*.png`.
+Once the combined images exist, you can render the titles over them. The output
+will be written to `render/combined*.png`.
 
 ```bash
 blender -b -t 8 titles.blend -a
-```
 
-If you are encoding this for a TV, it may not loop seamlessly - so encode
-a few loops into the video. You can use the `createlinks.sh` script to do
-this; currently, it creates 5 loops.
-
-```bash
-mkdir /tmp/final
-./createlinks.sh
-```
-
-Now the final video can be encoded.
-
-```bash
 avconv \
     -ar 48000 -ac 2 -f s16le -i /dev/zero \
-    -i /tmp/final/%04d.png \
+    -i render/combined%04d.png \
     -shortest \
     -vf "movie=textures/noise3.png [watermark];[in][watermark] overlay=0:0 [out]" \
     -b:v 30000k -qmin 2 -qmax 30 -c:v libx264 \
@@ -114,8 +99,6 @@ avconv \
     video/all-x264.mp4
 ```
 
-If you didn't want loops, the createlinks command can be omitted. In that case,
-use `render/final%04d.png` instead of `/tmp/final/%04d.png`.
 
 ### Noise Texture
 
